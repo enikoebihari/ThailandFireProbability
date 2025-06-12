@@ -4,6 +4,8 @@ Data and scripts used for apping fire probability in northern Thailand using a r
 
 **data DOI:**
 
+**recommended citation:**
+
 **Zenodo link:**
 
 **Paper:** 
