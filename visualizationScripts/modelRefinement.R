@@ -104,12 +104,12 @@ label_clean <- c(
 # plot AUCs (model refinement)
 ################################################################################
 
-auc = read.csv("AUC_v17_modelRefinement.csv")
+auc = read.csv("AUC_v17refinement.csv")
 
 # clean the dataframe
 auc_clean <- auc %>%
   # arrange from high to low values
-  arrange(desc(AUC)) %>%
+  arrange(Version) %>%
   # Rename the items in the variable column using the "label_clean" table
   mutate(Removed = label_clean[as.character(Removed)]) %>%
   # Convert 'Removed' to a factor and preserve the current order in plot
@@ -117,7 +117,7 @@ auc_clean <- auc %>%
 # print(auc_clean)
 
 # Create line plot of AUC by removed variable
-ggplot(auc_clean, 
+plot = ggplot(auc_clean, 
        aes(x = Removed,
            y = AUC, 
            group = 1)) +
@@ -154,7 +154,7 @@ ggplot(auc_clean,
                                        "inches")),
            size = 1) +
   annotate("text",
-           x = 2, y = 0.765,
+           x = 2, y = 0.77,
            label = "Distinct drop in AUC",
            fontface = "bold",
            hjust = 0, color = "#e1a486") +
@@ -163,8 +163,18 @@ ggplot(auc_clean,
        x = "Removed Variable", 
        y = "AUC",
        subtitle = "From Model Refinement") +
-  theme(axis.text.x = element_text(angle = 70, 
-                                   hjust = 1,
-                                   size = 8),
-        plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5))
+  theme(axis.text.x = element_text(angle = 70,           
+                                   hjust = 1,            
+                                   size = 8),           
+        axis.text.y = element_text(size = 8),           
+        axis.title.x = element_text(size = 12),              
+        axis.title.y = element_text(size = 12),             
+        plot.title = element_text(hjust = 0.5, size = 16),          
+        plot.subtitle = element_text(hjust = 0.5, size = 14))       
+
+print(plot)
+
+ggsave(filename = "AUCreductions_refinement.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)

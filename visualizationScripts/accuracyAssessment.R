@@ -64,7 +64,7 @@ roc_df <- data.frame(
 
 # Plot with ggplot2
 # (set x-axis as FPR (1 - specificity), y-axis as TPR (sensitivity))
-ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +  
+plot = ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +  
   geom_line(  # Add ROC curve
     color = "#9c3400ff",  # line color
     size = 1.2) +  # line thickness
@@ -79,9 +79,22 @@ ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +
     x = "False Positive Rate (1 - Specificity)", # x-axis label
     y = "True Positive Rate (Sensitivity)") + # y-axis label
   theme_minimal() +  # Apply theme
-  theme(  # Customize specific theme elements
-    plot.title = element_text(hjust = 0.5),  # Center title
-    plot.subtitle = element_text(hjust = 0.5))  # Center  subtitle
+  theme(
+    text = element_text(size = 8),                      # Text size
+    plot.title = element_text(hjust = 0.5, size = 16),   # title
+    plot.subtitle = element_text(hjust = 0.5,size = 14), #subtitle
+    axis.title.x = element_text(size = 12),              # X-axis label 
+    axis.title.y = element_text(size = 12),              # Y-axis label 
+    axis.text.x = element_text(size = 10),               # X-axis tick text 
+    axis.text.y = element_text(size = 10)                # Y-axis tick text
+  )
+
+print(plot)
+
+ggsave(filename = "ROC_20162023.png",        
+       plot = plot,     
+       bg = "white",
+       width = 7, height = 6, dpi = 1000)
 
 # 2024
 # ------------------------------------------------------------------------------
@@ -109,7 +122,7 @@ roc_df <- data.frame(
 )
 
 # Plot with ggplot2
-ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +
+plot = ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +
   geom_line(
     color = "#9c3400ff", 
     size = 1.2) +
@@ -124,8 +137,21 @@ ggplot(roc_df, aes(x = 1 - specificity, y = sensitivity)) +
     x = "False Positive Rate (1 - Specificity)",
     y = "True Positive Rate (Sensitivity)") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5)) 
+  theme(
+    text = element_text(size = 8),                      
+    plot.title = element_text(hjust = 0.5, size = 16),   
+    plot.subtitle = element_text(hjust = 0.5,size = 14), 
+    axis.title.x = element_text(size = 12),               
+    axis.title.y = element_text(size = 12),               
+    axis.text.x = element_text(size = 10),               
+    axis.text.y = element_text(size = 10)                
+  )
 
+print(plot)
+
+ggsave(filename = "ROC_2024.png",        
+       plot = plot,     
+       bg = "white",
+       width = 7, height = 6, dpi = 1000)
 
 

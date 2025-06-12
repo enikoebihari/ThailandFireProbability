@@ -1,14 +1,19 @@
 # Modeling Seasonal Fire Probability in Thailand: A Machine Learning Approach Using Multiyear Remote Sensing Data 
 
-Mapping fire probability in northern Thailand with a random forest model trained on historical fires and environmental and socioeconomic predictors of fires
+Data and scripts used for apping fire probability in northern Thailand using a random forest model trained on historical fires and historical environmental & socioeconomic predictors of fires
 
-all analysis scripts and data are in Google Earth Engine
+**data DOI:**
 
-all visualization scripts and data are in R
+**Zenodo link:**
 
-DOI  
+**Paper:** 
 
-Zenodo link
-GEE script repository
-GEE asset library
-paper link
+* all analysis was done in Google Earth Engine
+    * [GEE scripts](https://code.earthengine.google.com/?accept_repo=users/ee-scripts/Thailand-WB-FireRisk)
+    * [GEE data](https://code.earthengine.google.com/?asset=projects/worldbank-fire/assets/ThailandFireProbability_public)
+* most visualization was done R 
+    * [R scripts](https://github.com/enikoebihari/ThailandFireProbability/tree/main/visualizationScripts)
+    * [R data](https://github.com/enikoebihari/ThailandFireProbability/tree/main/data)
+
+
+

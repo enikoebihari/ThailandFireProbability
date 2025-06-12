@@ -88,24 +88,26 @@ label_clean <- c(
 
 # import full model and refined model variable importances
 varImp_v17 = read.csv("variableImportance_v17.csv")
-# print(varImp_v17$Property)
+print(names(varImp_v17))
 
-# Arrange in descending order of importance
+# clean up
 varImp_v17_clean <- varImp_v17 %>% 
-  # rename columns
-  rename(
-    Importance = X0,
-    Variable = Property) %>% 
+  # remove undesired columns
+  select(-.geo,-system.index) %>%
+  # flip columns and rows, rename new columns
+  pivot_longer(cols = everything(), 
+               names_to = "Variable", 
+               values_to = "Importance") %>% 
   # arrange by high to low importance
   arrange(desc(Importance)) %>%
   # replace variable names with the clean versions
-  mutate(Variable = label_clean[as.character(Variable)]) %>% 
+  mutate(Variable = label_clean[as.character(Variable)]) %>%
   # turn variable into a factor to maintain order in plot
-  mutate(Variable = factor(Variable, 
+  mutate(Variable = factor(Variable,
                            levels = rev(Variable)))
 
 # Create bar chart with ggplot
-ggplot(varImp_v17_clean,             
+plot = ggplot(varImp_v17_clean,             
        aes(x = Variable,             # Set x-axis to variables
            y = Importance)) +        # Set y-axis to importances
   geom_bar(stat = "identity",        # add bar chart
@@ -114,7 +116,7 @@ ggplot(varImp_v17_clean,
   theme_minimal() +                  # minimal theme
   geom_text(aes(label = round(Importance, 2)), # add text labels
             hjust = -0.1,            # Position labels slightly outside bars
-            size = 3.5) +            # Set text size
+            size = 3) +              # Set text size
   labs(
     title = "Scaled Variable Importance",       # Title
     subtitle = "Before Variable Removal",       # Subtitle
@@ -124,31 +126,48 @@ ggplot(varImp_v17_clean,
   scale_y_continuous(expand = c(0, 0),          # No space below bars
                      limits = c(0, max(varImp_v17_clean$Importance) + 0.3)) + # Set y-axis limit
   theme(
-    text = element_text(size = 12),             # Text size
-    plot.title = element_text(hjust = 0.5),     # Center title
-    plot.subtitle = element_text(hjust = 0.5)   # Center subtitle
+    text = element_text(size = 8),                       # Text size
+    plot.title = element_text(hjust = 0.5, size = 16),   # title
+    plot.subtitle = element_text(hjust = 0.5,size = 14), #subtitle
+    axis.title.x = element_text(size = 12),              # X-axis label 
+    axis.title.y = element_text(size = 12),              # Y-axis label 
+    axis.text.x = element_text(size = 8),                # X-axis tick text 
+    axis.text.y = element_text(size = 8)                 # Y-axis tick text
   )
+
+print(plot)
+
+ggsave(filename = "varImportance_full.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)
 
 ################################################################################
 # plot variable variable importances (refined model)
 ################################################################################
 
 # import
-varImp_v17_11 = read.csv("variableImportance_v17.11.csv")
-# print(varImp_v17_11$Property)
+varImp_v17_11 = read.csv("variableImportance_v17_11.csv")
+print(names(varImp_v17_11))
 
-# clean
+# clean up
 varImp_v17_11_clean <- varImp_v17_11 %>% 
-  rename(
-    Importance = X0,
-    Variable = Property
-  ) %>% 
+  # remove undesired columns
+  select(-.geo,-system.index) %>%
+  # flip columns and rows, rename new columns
+  pivot_longer(cols = everything(), 
+               names_to = "Variable", 
+               values_to = "Importance") %>% 
+  # arrange by high to low importance
   arrange(desc(Importance)) %>%
-  mutate(Variable = label_clean[as.character(Variable)]) %>% 
-  mutate(Variable = factor(Variable, levels = rev(Variable)))
+  # replace variable names with the clean versions
+  mutate(Variable = label_clean[as.character(Variable)]) %>%
+  # turn variable into a factor to maintain order in plot
+  mutate(Variable = factor(Variable,
+                           levels = rev(Variable)))
 
 # Create bar chart
-ggplot(varImp_v17_11_clean, 
+plot = ggplot(varImp_v17_11_clean, 
        aes(x = Variable, 
            y = Importance)) +
   geom_bar(stat = "identity", 
@@ -156,7 +175,7 @@ ggplot(varImp_v17_11_clean,
   coord_flip() +  
   geom_text(aes(label = round(Importance, 2)), 
             hjust = -0.1, 
-            size = 3.5) +
+            size = 3) +
   theme_minimal() +
   labs(
     title = "Scaled Variable Importance",
@@ -167,8 +186,18 @@ ggplot(varImp_v17_11_clean,
   scale_y_continuous(expand = c(0, 0), 
                      limits = c(0, max(varImp_v17_11_clean$Importance) + 0.3)) + 
   theme(
-    text = element_text(size = 12),
-    plot.title = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5)
+    text = element_text(size = 8),                      
+    plot.title = element_text(hjust = 0.5, size = 16),   
+    plot.subtitle = element_text(hjust = 0.5,size = 14), 
+    axis.title.x = element_text(size = 12),               
+    axis.title.y = element_text(size = 12),              
+    axis.text.x = element_text(size = 8),               
+    axis.text.y = element_text(size = 8)                
   )
 
+print(plot)
+
+ggsave(filename = "varImportance_refined.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)

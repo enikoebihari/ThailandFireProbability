@@ -32,6 +32,7 @@ library(data.table)
 library(ggplot2)
 library(ggnewscale)
 library(ggdist)
+library(tmap)
 
 # working directory
 # ------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ getwd()
 
 # Create a vector matching nice labels to current column names
 label_clean <- c(
-  full = "full model",
+  full = "Full Fodel",
   EVI = "EVI",
   HHpalsarLdiffWetDry = "Seasonal Diff in SAR ",
   NDMI = "NDMI",
@@ -105,8 +106,8 @@ label_clean <- c(
 ################################################################################
 
 # read in variable importances from sensitivity analysis
-varImp = read.csv("varImportances_v17_sensitivityAnalysis.csv")
-# print(colnames(varImp))
+varImp = read.csv("varImportances_v17sensitivity.csv")
+print(colnames(varImp))
 
 # Clean up dataframe 
 varImp_clean <- varImp %>%
@@ -145,11 +146,13 @@ print(tail(varImp_summary,5))
 print(head(varImp_summary,5))
 
 # Create boxplots of variable importances by removed variable
-ggplot(varImp_clean, 
+plot = ggplot(varImp_clean, 
        aes(x = variable,             # Set x-axis to 'variable' 
            y = importance)) +        # Set y-axis to 'importance'
   # Add boxplots 
   geom_boxplot(fill = "#e1a486",    # Fill color 
+               size = 0.3,          # line size
+               outlier.size = 0.5,  # point size
                alpha = 1) +         # Opacity 
   # Apply a minimal theme 
   theme_minimal() +
@@ -157,22 +160,32 @@ ggplot(varImp_clean,
   labs(title = "Variable Importance Distributions",      # Title of the plot
        subtitle = "From Sensitivity Analysis",           # Subtitle
        y = "Importance",                                 # Label for y-axis
-       y = "Variable",) +                                # Label for y-axis
+       x = "Variable",) +                                # Label for y-axis
   # format  labels and titles
   theme(axis.text.x = element_text(angle = 70,           # Rotate x-axis labels
                                    hjust = 1,            # align 
                                    size = 8),            # font size
-        plot.title = element_text(hjust = 0.5),          # Center plot title
-        plot.subtitle = element_text(hjust = 0.5))       # Center subtitle
+        axis.text.y = element_text(size = 8),            # Y-axis tick text
+        axis.title.x = element_text(size = 12),              # X-axis label 
+        axis.title.y = element_text(size = 12),              # Y-axis label 
+        plot.title = element_text(hjust = 0.5, size = 16),          # plot title
+        plot.subtitle = element_text(hjust = 0.5, size = 14))       # subtitle
+
+print(plot)
+
+ggsave(filename = "varImportances_sensitivity.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)
 
 ################################################################################
 # plot AUCs (sensitivity analysis)
 ################################################################################
 
 # read in AUCs from sensitivity analysis
-auc = read.csv("AUC_v17_sensitivityAnalysis.csv")
+auc = read.csv("AUC_v17sensitivity.csv")
 
-# extract the full model AUC from the dtaa frame
+# extract the full model AUC from the data frame
 AUC_full <- auc %>%
   # filter for that row 
   filter(Removed == "full") %>%
@@ -188,15 +201,15 @@ auc_clean <- auc %>%
   mutate(Removed = label_clean[as.character(Removed)]) %>%
   # Convert 'Removed' to a factor and preserve the current order in plot
   mutate(Removed = factor(Removed, levels = Removed))
-# print(auc_clean)
+print(auc_clean)
 
 # Create line plot of AUC by removed variable
-ggplot(df2, 
+plot = ggplot(auc_clean, 
        aes(x = Removed,              # Set x-axis to 'Removed' variable
            y = AUC,                  # Set y-axis to 'AUC'
            group = 1)) +             # Group all points into one line
   # Add horizontal line for full model AUC
-  geom_hline(yintercept = full_AUC, # place at full model AUC on y axis
+  geom_hline(yintercept = AUC_full, # place at full model AUC on y axis
              linetype = "dashed",   # line style
              color = "#e1a486",     # Line color
              size = 1) +            # Line thickness
@@ -208,8 +221,8 @@ ggplot(df2,
              color = "#9c3400ff") + # Point color
   # label full model AUC
   annotate("text", 
-           x = 20,                                 # x-position 
-           y = full_AUC + 0.0009,                  # y-position 
+           x = 21,                                 # x-position 
+           y = AUC_full + 0.0009,                  # y-position 
            label = "Full Model AUC = 0.845",       # Text 
            fontface = "bold",                      # bold
            color = "#e1a486",                      # Text color 
@@ -222,10 +235,19 @@ ggplot(df2,
        x = "Removed Variable",                    # X-axis label
        y = "AUC") +                               # Y-axis label
   # Format labels and titles
-  theme(axis.text.x = element_text(angle = 70,    # Rotate x-axis labels
-                                   hjust = 1,     # Align labels
-                                   size = 8),     # Font size
-        plot.title = element_text(hjust = 0.5),   # Center title
-        plot.subtitle = element_text(hjust = 0.5))# Center subtitle
+  theme(axis.text.x = element_text(angle = 70,           # Rotate x-axis labels
+                                   hjust = 1,            # align 
+                                   size = 8),            # font size
+        axis.text.y = element_text(size = 8),            # Y-axis tick text
+        axis.title.x = element_text(size = 12),              # X-axis label 
+        axis.title.y = element_text(size = 12),              # Y-axis label 
+        plot.title = element_text(hjust = 0.5, size = 16),          # plot title
+        plot.subtitle = element_text(hjust = 0.5, size = 14))       # subtitle
 
+print(plot)
+
+ggsave(filename = "AUCreductions_sensitivity.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)
 

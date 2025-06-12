@@ -93,7 +93,7 @@ label_clean <- c(
 ################################################################################
 
 # import reference points
-refPts = read.csv("referencePts20162023_v17.csv")
+refPts = read.csv("referencePts20162023_v15.csv")
 # print(names(refPts))
 
 # clean data frame
@@ -139,7 +139,7 @@ colnames(corr) <- label_clean[colnames(corr)]
 # print(colnames(corr))
 
 # create a correlation plot
-ggcorrplot(corr,                     # Plot correlation matrix
+plot = ggcorrplot(corr,                     # Plot correlation matrix
            hc.method = "median",     # Use median method for clustering
            hc.order = TRUE,          # Order variables by cluster
            type = "lower",           # Show only lower triangle
@@ -150,21 +150,30 @@ ggcorrplot(corr,                     # Plot correlation matrix
   ) +
   theme(
     axis.text.x = element_text(size = 5,         # x variable label size
-                               color = 'black'), # x variable label color
+                               ),                # x variable label color
     axis.text.y = element_text(size = 5,         # y variable label size
-                               color = 'black'), # y variable label color
-    text = element_text(size = 8),               # text size
-    legend.position = c(.2, .75),                # Move legend to top left
-    legend.key = element_rect(fill = "white"),   # legend background
-    plot.title = element_text(hjust = 0.5)       # Center title
+                               ),                # y variable label color
+    text = element_text(size = 5),               # text size
+    legend.title = element_text(size = 8),      # Title size
+    legend.text  = element_text(size = 5),      # Label size
+    legend.position = c(.2, .75),                           # Move legend to top left
+    legend.key = element_rect(fill = "white"),              # legend background
+    plot.title = element_text(hjust = 0.5, size = 12)       # Center title
   ) +
-  scale_y_discrete(position = 'right') +         # Move y-axis labels to right
+  scale_y_discrete(position = 'right') +              # Move y-axis labels to right
   guides(fill = guide_colorbar(ticks.colour = NA)) +  # remove ticks from color bar
   labs(
     title = "Predictor Variable Correlations",  # Title of plot
     x = "Variable",                             # x-axis labels
     y = "Variable"                              # y-axis labels
   )
+
+print(plot)
+
+ggsave(filename = "corrMatrix.png",        
+       plot = plot,     
+       bg = "white",
+       width = 8, height = 6, dpi = 1000)
 
 ################################################################################
 # correlation bar chart
@@ -218,14 +227,14 @@ corMatrix_clean <- as.data.frame(as.table(corMatrix)) %>%
 # print(corMatrix_clean)
 
 # plot correlation coefficients as horizontal bar chart
-ggplot(corMatrix_clean, 
+plot = ggplot(corMatrix_clean, 
        aes(x = pair, 
            y = absCorr,            # y axis as absolute value of correlation 
            fill = corr)) +          # fill color by actual correlation
   geom_col() +                                  # Add bars to the plot
   geom_text(aes(label = round(corr, 2)),        # Add correlation values as labels
             hjust = -0.1,                       # place just outside bars
-            size = 3.5) +                       # text size
+            size = 3) +                       # text size
   coord_flip() +                                # Flip axes for horizontal bars
   theme_minimal() +                             # minimal theme
   scale_y_continuous(expand = c(0, 0),          # Remove extra space on y-axis
@@ -244,10 +253,25 @@ ggplot(corMatrix_clean,
     y = "Correlation Magnitude"                  # y-axis label
   ) +
   theme(
-    axis.text.y = element_text(size = 8),        # y-axis labels text size
-    plot.title = element_text(hjust = 0.5),      # Center the title
+    text = element_text(size = 8),                      
+    plot.title = element_text(hjust = 0.5, size = 16),   
+    plot.subtitle = element_text(hjust = 0.5,size = 14), 
+    axis.title.x = element_text(size = 12),               
+    axis.title.y = element_text(size = 12),              
+    axis.text.x = element_text(size = 8),               
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 12),      # Title size
+    legend.text  = element_text(size = 8),       # Label size
+    legend.key = element_rect(fill = "white"),   # legend background
     legend.position = "right"                    # Show legend on the right
   )
+
+print(plot)
+
+ggsave(filename = "corrBarChart.png",        
+       plot = plot,     
+       bg = "white",
+       width = 10, height = 6, dpi = 1000)
 
 ################################################################################
 # VIF
@@ -301,13 +325,13 @@ vif_clean <- data.frame(Variable = names(vif),
 # print(vif_clean)
 
 # Plot VIFs as bar plot
-ggplot(vif_clean,                
+plot = ggplot(vif_clean,                
        aes(x = NiceLabel,               # labels on x-axis
            y = VIF)) +                  # VIF on y-axis v
   geom_col(fill = "#9c3400ff") +        # bar color
   geom_text(aes(label = round(VIF, 1)), # Add VIFs as labels on bars
             hjust = -0.1,               # text location
-            size = 3.5) +               # text size
+            size = 3) +               # text size
   coord_flip() +                        # Flip coordinates for horizontal bars
   theme_minimal() +                     #  theme
   scale_y_continuous(expand = c(0, 0), 
@@ -318,7 +342,18 @@ ggplot(vif_clean,
     y = "VIF"                                   # y-axis label
   ) +
   theme(
-    axis.text.y = element_text(size = 10),      # size y-axis labels
-    plot.title = element_text(hjust = 0.5)      # Center plot title
+    text = element_text(size = 8),                       # Text size
+    plot.title = element_text(hjust = 0.5, size = 16),   # title
+    plot.subtitle = element_text(hjust = 0.5,size = 14), #subtitle
+    axis.title.x = element_text(size = 12),              # X-axis label 
+    axis.title.y = element_text(size = 12),              # Y-axis label 
+    axis.text.x = element_text(size = 8),                # X-axis tick text 
+    axis.text.y = element_text(size = 8)                 # Y-axis tick text
   )
 
+print(plot)
+
+ggsave(filename = "VIF.png",        
+       plot = plot,     
+       bg = "white",
+       width = 9, height = 6, dpi = 1000)
