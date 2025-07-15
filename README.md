@@ -4,9 +4,9 @@ Data and scripts used for apping fire probability in northern Thailand using a r
 
 **DOI:** https://doi.org/10.5281/zenodo.15935272
 
-**recommended citation:**
+**Recommended citation:**
 
-**Paper:** 
+**Associated publication:** 
 
 * analysis was done in Google Earth Engine
     * [GEE scripts](https://code.earthengine.google.com/?accept_repo=users/ee-scripts/Thailand-WB-FireRisk)
